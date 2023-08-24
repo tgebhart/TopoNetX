@@ -74,6 +74,56 @@ def graph_to_clique_complex(
 
     return SC
 
+def graph_to_independent_set_complex(
+    G: nx.Graph, max_dim: int | None = None
+) -> SimplicialComplex:
+    """Get the independent set complex of a graph.
+    This simplicial complex is equivalent to the clique complex
+    of the complement of the original graph. 
+    Note that this complex will ignore any edge information in G. 
+
+    Parameters
+    ----------
+    G : networkx graph
+        Input graph.
+    max_dim : int, optional
+        The max dimension of the cliques in
+        the output clique complex of the complement.
+        The default is None indicates max dimension.
+
+    Returns
+    -------
+    SimplicialComplex
+        The independent set simplicial complex of the graph G.
+    """
+    return graph_to_clique_complex(nx.complement(G), max_dim=max_dim)
+
+def graph_to_power_complex(
+    G: nx.Graph, pow: int, max_dim: int | None = None
+) -> SimplicialComplex:
+    """Get the power complex of a graph by taking pow graph powers
+    then computing the clique complex of the resulting power graph.
+    Note that this complex will ignore any edge information in G. 
+
+    Parameters
+    ----------
+    G : networkx graph
+        Input graph.
+    pow: int
+        The graph power to compute. Must be greater than 0.
+    max_dim : int, optional
+        The max dimension of the cliques in
+        the output clique complex of the complement.
+        The default is None indicates max dimension.
+
+    Returns
+    -------
+    SimplicialComplex
+        The graph power complex of the graph G.
+    """
+    if pow < 1:
+        raise ValueError(f'Graph power {pow} must be greater than 0.')
+    return graph_to_clique_complex(nx.power(G, pow), max_dim=max_dim)
 
 def graph_2_neighbor_complex(G) -> SimplicialComplex:
     warn(
